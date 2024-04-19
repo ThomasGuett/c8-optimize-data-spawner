@@ -14,13 +14,6 @@ public class Dataspawner implements JobHandler {
     private Integer timeMin = Integer.valueOf(System.getenv("JOBTIME_MIN"));
     private Integer timeMax = Integer.valueOf(System.getenv("JOBTIME_MAX"));
 
-    private Double failureRate = Double.valueOf(System.getenv("FAILURE_RATE"));
-
-    private boolean failsByChance(Double failureRate) {
-        int randomInt = ThreadLocalRandom.current().nextInt(0, 101);
-        return randomInt <= failureRate;
-    }
-
     @Override
     public void handle(final JobClient client, final ActivatedJob job) {
         // provide random wait value based on system env or default
@@ -33,7 +26,7 @@ public class Dataspawner implements JobHandler {
         // trigger if error to be thrown
         String strFailJobTypes = variables.containsKey("failJobs") ? String.valueOf(variables.get("failJobs")).replace(" ", "") : "";
         List<String> failJobTypes = Arrays.asList(strFailJobTypes.split(","));
-        if (failJobTypes.contains(job.getType()) && failsByChance(failureRate)) {
+        if (failJobTypes.contains(job.getType())) {
             // found job type in fail list
             System.out.println("failing jobType as requested: " + job.getType() + " instance: " + job.getProcessInstanceKey());
             client.newThrowErrorCommand(job).errorCode("spawner").errorMessage("as requested").send().join();

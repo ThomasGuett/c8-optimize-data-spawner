@@ -18,7 +18,9 @@ public class Dataspawner implements JobHandler {
 
     private boolean failsByChance(Double failureRate) {
         int randomInt = ThreadLocalRandom.current().nextInt(0, 101);
-        return randomInt <= failureRate;
+        boolean willFail = randomInt <= failureRate;
+        System.out.println("random int: " + randomInt + " failure percent: " + failureRate + " fails: " + willFail);
+        return willFail;
     }
 
     @Override
@@ -27,6 +29,8 @@ public class Dataspawner implements JobHandler {
         timeMax = (null != timeMax && timeMax >= 0) ? timeMax : 1000;
         timeMin = (null != timeMin && timeMin <= timeMax) ? timeMin : 0;
         int timeDelay = ThreadLocalRandom.current().nextInt(timeMin, timeMax + 1);
+
+        failureRate = null != failureRate ? failureRate : 0;
 
         // optional variable handling
         Map<String, Object> variables = job.getVariablesAsMap();

@@ -1,0 +1,7 @@
+{
+  "messageDelay": 0,
+  "correlationKeys": [
+    "65123"
+  ],
+  "messageName": "MESSAGE_FREIGABE"
+}

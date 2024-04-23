@@ -1,0 +1,15 @@
+{
+  "processId":"Process_Bankuebertrag_ohne_Ergaenzung",
+  "instanceCount": 10,
+  "processVariables": {
+    "gvStatus": "INIT",
+    "abgeltungssteuerRelevant": true,
+    "manuelleFreigabe": false,
+    "failJobs": "serviceTaskFailChance, serviceTask1",
+    "runNumber": 0,
+    "vorfreigabe": true,
+    "kategorie": "MANUELL",
+    "duplikat": false,
+    "duplicate": false
+  }
+}

@@ -5,6 +5,7 @@ services:
       - ZEEBE_JOB_TYPE=serviceTask1 ## io.camunda.zeebe:userTask serviceTaskFailChance
       - JOBTIME_MIN=0 ## value in miliseconds
       - JOBTIME_MAX=500
+      - FAILURE_RATE=0
       - ZEEBE_ADDRESS=${ZEEBE_ADDRESS}
       - CAMUNDA_OAUTH_URL=${CAMUNDA_OAUTH_URL}
       - ZEEBE_CLIENT_ID=${ZEEBE_CLIENT_ID}
@@ -26,6 +27,7 @@ services:
       - ZEEBE_JOB_TYPE=serviceTaskFailChance ## io.camunda.zeebe:userTask serviceTaskFailChance
       - JOBTIME_MIN=0 ## value in miliseconds
       - JOBTIME_MAX=500
+      - FAILURE_RATE=10 # percentage value
       - ZEEBE_ADDRESS=${ZEEBE_ADDRESS}
       - CAMUNDA_OAUTH_URL=${CAMUNDA_OAUTH_URL}
       - ZEEBE_CLIENT_ID=${ZEEBE_CLIENT_ID}
@@ -47,6 +49,7 @@ services:
       - ZEEBE_JOB_TYPE=io.camunda.zeebe:userTask ## io.camunda.zeebe:userTask
       - JOBTIME_MIN=10000 ## value in miliseconds
       - JOBTIME_MAX=50000
+      - FAILURE_RATE=0
       - ZEEBE_ADDRESS=${ZEEBE_ADDRESS}
       - CAMUNDA_OAUTH_URL=${CAMUNDA_OAUTH_URL}
       - ZEEBE_CLIENT_ID=${ZEEBE_CLIENT_ID}

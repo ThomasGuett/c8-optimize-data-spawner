@@ -50,6 +50,7 @@ public class Dataspawner implements JobHandler {
             } catch(InterruptedException error) {
                 System.out.print("Silent Error: Sleep not possible due to Interrupted Exception: " + error.getMessage());
             }
+            variables.put("zufallsZahl",42);
             client.newCompleteCommand(job).variables(variables).send().join();
         }
     }

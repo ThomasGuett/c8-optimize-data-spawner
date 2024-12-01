@@ -30,7 +30,7 @@ public class DemoApplication {
 					.build();
 
 	public ZeebeClient client = ZeebeClient.newClientBuilder()
-			.gatewayAddress(zeebeAddress)
+			.grpcAddress(zeebeAddress)
 			.credentialsProvider(credentialsProvider)
 			.build();
 

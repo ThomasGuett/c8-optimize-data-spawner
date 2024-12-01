@@ -1,69 +1,40 @@
+version: '3.4'
+
+x-common-variables: &common-variables
+  ZEEBE_ADDRESS: ${ZEEBE_ADDRESS}
+  CAMUNDA_OAUTH_URL: ${CAMUNDA_OAUTH_URL}
+  ZEEBE_CLIENT_ID: ${ZEEBE_CLIENT_ID}
+  ZEEBE_CLIENT_SECRET: ${ZEEBE_CLIENT_SECRET}
+  ZEEBE_AUTHORIZATION_SERVER_URL: ${CAMUNDA_OAUTH_URL}
+  ZEEBE_REST_ADDRESS: ${ZEEBE_REST_ADDRESS}
+  ZEEBE_GRPC_ADDRESS: ${ZEEBE_GRPC_ADDRESS}
+  ZEEBE_TOKEN_AUDIENCE: zeebe.camunda.io
+  ZEEBE_CLIENT_CLOUD_CLUSTERID: ${ZEEBE_CLUSTER_ID}
+  ZEEBE_CLIENT_CLOUD_CLIENTID: ${ZEEBE_CLIENT_ID}
+  ZEEBE_CLIENT_CLOUD_CLIENTSECRET: ${ZEEBE_CLIENT_SECRET}
+  ZEEBE_CLIENT_CLOUD_AUTHURL: ${ZEEBE_AUTHORIZATION_SERVER_URL}
+  env_file: '.env'
+
 services:
+  dataflowcontrol:
+    image: camunda/data-flowcontrol
+    environment:
+      <<: *common-variables
+    ports:
+      - "8008:8080"
+
   dataspawner1:
     image: camunda/data-spawner
     environment:
-      - ZEEBE_JOB_TYPE=serviceTask1 ## io.camunda.zeebe:userTask serviceTaskFailChance
-      - JOBTIME_MIN=0 ## value in miliseconds
-      - JOBTIME_MAX=500
-      - FAILURE_RATE=0
-      - ZEEBE_ADDRESS=${ZEEBE_ADDRESS}
-      - CAMUNDA_OAUTH_URL=${CAMUNDA_OAUTH_URL}
-      - ZEEBE_CLIENT_ID=${ZEEBE_CLIENT_ID}
-      - ZEEBE_CLIENT_SECRET=${ZEEBE_CLIENT_SECRET}
-      - ZEEBE_AUTHORIZATION_SERVER_URL=${CAMUNDA_OAUTH_URL}
-      - ZEEBE_REST_ADDRESS=${ZEEBE_REST_ADDRESS}
-      - ZEEBE_GRPC_ADDRESS=${ZEEBE_GRPC_ADDRESS}
-      - ZEEBE_TOKEN_AUDIENCE=zeebe.camunda.io
-      - ZEEBE_CLIENT_CLOUD_CLUSTERID=${ZEEBE_CLUSTER_ID}
-      - ZEEBE_CLIENT_CLOUD_CLIENTID=${ZEEBE_CLIENT_ID}
-      - ZEEBE_CLIENT_CLOUD_CLIENTSECRET=${ZEEBE_CLIENT_SECRET}
-      - ZEEBE_CLIENT_CLOUD_AUTHURL=${ZEEBE_AUTHORIZATION_SERVER_URL}
-    deploy:
-      replicas: 1
+      <<: *common-variables
+      ZEEBE_JOB_TYPE: 'service1' ## io.camunda.zeebe:userTask serviceTaskFailChance
+      JOBTIME_MIN: 0 ## delay value in miliseconds
+      JOBTIME_MAX: 500
+      FAILURE_RATE: 0
 
-  dataspawner2:
-    image: camunda/data-spawner
-    environment:
-      - ZEEBE_JOB_TYPE=serviceTaskFailChance ## io.camunda.zeebe:userTask serviceTaskFailChance
-      - JOBTIME_MIN=0 ## value in miliseconds
-      - JOBTIME_MAX=500
-      - FAILURE_RATE=10 # percentage value
-      - ZEEBE_ADDRESS=${ZEEBE_ADDRESS}
-      - CAMUNDA_OAUTH_URL=${CAMUNDA_OAUTH_URL}
-      - ZEEBE_CLIENT_ID=${ZEEBE_CLIENT_ID}
-      - ZEEBE_CLIENT_SECRET=${ZEEBE_CLIENT_SECRET}
-      - ZEEBE_AUTHORIZATION_SERVER_URL=${CAMUNDA_OAUTH_URL}
-      - ZEEBE_REST_ADDRESS=${ZEEBE_REST_ADDRESS}
-      - ZEEBE_GRPC_ADDRESS=${ZEEBE_GRPC_ADDRESS}
-      - ZEEBE_TOKEN_AUDIENCE=zeebe.camunda.io
-      - ZEEBE_CLIENT_CLOUD_CLUSTERID=${ZEEBE_CLUSTER_ID}
-      - ZEEBE_CLIENT_CLOUD_CLIENTID=${ZEEBE_CLIENT_ID}
-      - ZEEBE_CLIENT_CLOUD_CLIENTSECRET=${ZEEBE_CLIENT_SECRET}
-      - ZEEBE_CLIENT_CLOUD_AUTHURL=${ZEEBE_AUTHORIZATION_SERVER_URL}
+    ## control the amount of simulated workers (obviously takes up resources of your environment)
     deploy:
-      replicas: 1
-
-  dataspawner3:
-    image: camunda/data-spawner
-    environment:
-      - ZEEBE_JOB_TYPE=io.camunda.zeebe:userTask ## io.camunda.zeebe:userTask
-      - JOBTIME_MIN=10000 ## value in miliseconds
-      - JOBTIME_MAX=50000
-      - FAILURE_RATE=0
-      - ZEEBE_ADDRESS=${ZEEBE_ADDRESS}
-      - CAMUNDA_OAUTH_URL=${CAMUNDA_OAUTH_URL}
-      - ZEEBE_CLIENT_ID=${ZEEBE_CLIENT_ID}
-      - ZEEBE_CLIENT_SECRET=${ZEEBE_CLIENT_SECRET}
-      - ZEEBE_AUTHORIZATION_SERVER_URL=${CAMUNDA_OAUTH_URL}
-      - ZEEBE_REST_ADDRESS=${ZEEBE_REST_ADDRESS}
-      - ZEEBE_GRPC_ADDRESS=${ZEEBE_GRPC_ADDRESS}
-      - ZEEBE_TOKEN_AUDIENCE=zeebe.camunda.io
-      - ZEEBE_CLIENT_CLOUD_CLUSTERID=${ZEEBE_CLUSTER_ID}
-      - ZEEBE_CLIENT_CLOUD_CLIENTID=${ZEEBE_CLIENT_ID}
-      - ZEEBE_CLIENT_CLOUD_CLIENTSECRET=${ZEEBE_CLIENT_SECRET}
-      - ZEEBE_CLIENT_CLOUD_AUTHURL=${ZEEBE_AUTHORIZATION_SERVER_URL}
-    deploy:
-      replicas: 10
+      replicas: 2
 
 networks:
   default:

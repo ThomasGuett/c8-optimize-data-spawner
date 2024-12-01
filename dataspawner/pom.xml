@@ -39,7 +39,7 @@
 		<dependency>
 			<groupId>io.camunda</groupId>
 			<artifactId>zeebe-client-java</artifactId>
-			<version>8.4.0-alpha2</version>
+			<version>8.6.0-alpha2</version>
 		</dependency>
 	</dependencies>
 

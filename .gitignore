@@ -2,3 +2,5 @@
 .idea/
 .env
 dataspawner/.idea/
+dataspawner/target/
+flowcontrol/target/

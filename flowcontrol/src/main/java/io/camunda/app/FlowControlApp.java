@@ -3,11 +3,12 @@ package io.camunda.app;
 import io.camunda.app.model.SimulationMessage;
 import io.camunda.app.model.SimulationRun;
 import io.camunda.zeebe.client.ZeebeClient;
+import io.camunda.zeebe.client.api.command.CreateProcessInstanceCommandStep1;
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
-import io.camunda.zeebe.client.api.response.ProcessInstanceResult;
 import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProvider;
 import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,24 +32,30 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @EnableAutoConfiguration
 public class FlowControlApp {
-	private String zeebeAddress = System.getenv("ZEEBE_ADDRESS");
+
+	private String zeebeAddressString = System.getenv("ZEEBE_ADDRESS");
+	private URI zeebeGrpcAddress = new URI(System.getenv("ZEEBE_GRPC_ADDRESS"));
 	private String oauthUrl = System.getenv("CAMUNDA_OAUTH_URL");
 	private String clientId = System.getenv("ZEEBE_CLIENT_ID");
 	private String clientSecret = System.getenv("ZEEBE_CLIENT_SECRET");
+	private String jobType = System.getenv("ZEEBE_JOB_TYPE");
 	OAuthCredentialsProvider credentialsProvider =
 			new OAuthCredentialsProviderBuilder()
 					.authorizationServerUrl(oauthUrl)
-					.audience(zeebeAddress)
+					.audience(zeebeAddressString)
 					.clientId(clientId)
 					.clientSecret(clientSecret)
 					.build();
 
 	public ZeebeClient client = ZeebeClient.newClientBuilder()
-			.gatewayAddress(zeebeAddress)
+			.grpcAddress(zeebeGrpcAddress)
 			.credentialsProvider(credentialsProvider)
 			.build();
 
-	@PostMapping(value = "/sendMessages",
+    public FlowControlApp() throws URISyntaxException {
+    }
+
+    @PostMapping(value = "/sendMessages",
 	consumes = MediaType.APPLICATION_JSON_VALUE,
 	produces = MediaType.APPLICATION_JSON_VALUE)
 	public SimulationMessage sendMessage(@RequestBody SimulationMessage simulationMessage, HttpServletRequest request) {
@@ -96,7 +105,7 @@ public class FlowControlApp {
 				}
 			}
 
-			//client.newCreateInstanceCommand().bpmnProcessId(processID).latestVersion().variables(simulationRun.getProcessVariables()).send().join();
+			// client.newCreateInstanceCommand().bpmnProcessId(processID).latestVersion().variables(simulationRun.getProcessVariables()).send().join();
 
 
 			// send required messages to instance

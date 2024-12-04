@@ -10,13 +10,16 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RestController;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @SpringBootApplication
 @RestController
 @Configuration
 @EnableAutoConfiguration
 public class DemoApplication {
-	private String zeebeAddress = System.getenv("ZEEBE_ADDRESS");
+	private String zeebeAddressString = System.getenv("ZEEBE_ADDRESS");
+	private URI zeebeGrpcAddress = new URI(System.getenv("ZEEBE_GRPC_ADDRESS"));
 	private String oauthUrl = System.getenv("CAMUNDA_OAUTH_URL");
 	private String clientId = System.getenv("ZEEBE_CLIENT_ID");
 	private String clientSecret = System.getenv("ZEEBE_CLIENT_SECRET");
@@ -24,13 +27,13 @@ public class DemoApplication {
 	OAuthCredentialsProvider credentialsProvider =
 			new OAuthCredentialsProviderBuilder()
 					.authorizationServerUrl(oauthUrl)
-					.audience(zeebeAddress)
+					.audience(zeebeAddressString)
 					.clientId(clientId)
 					.clientSecret(clientSecret)
 					.build();
 
 	public ZeebeClient client = ZeebeClient.newClientBuilder()
-			.grpcAddress(zeebeAddress)
+			.grpcAddress(zeebeGrpcAddress)
 			.credentialsProvider(credentialsProvider)
 			.build();
 
@@ -40,7 +43,10 @@ public class DemoApplication {
 			.timeout(100000L)
 			.open();
 
-	public static void main(String[] args) {
+    public DemoApplication() throws URISyntaxException {
+    }
+
+    public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
